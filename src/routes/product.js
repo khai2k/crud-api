@@ -3,6 +3,7 @@ Joi.objectId = require('joi-objectid')(Joi)
 
 import restifyRouter from 'restify-router'
 import productDao from '../dao/product'
+import { isAuth, isAdmin } from '../utils/getToken'
 
 const Router = restifyRouter.Router
 const productRoute = new Router()
@@ -10,31 +11,31 @@ const productRoute = new Router()
 // Read all user
 productRoute.get("",
 
-  async (req,res)=>{
+  async (req, res) => {
     let result = await productDao.readallUser();
     res.send(result);
   }
 ),
-// Read user
-productRoute.get(
-  {
-    path: '/:id',
-    validation: {
-      schema: Joi.object().keys({
-        params: Joi.object()
-          .keys({
-            id: Joi.objectId().required()
-          })
-          .required()
-      })
+  // Read user
+  productRoute.get(
+    {
+      path: '/:id',
+      validation: {
+        schema: Joi.object().keys({
+          params: Joi.object()
+            .keys({
+              id: Joi.objectId().required()
+            })
+            .required()
+        })
+      }
+    },
+    async (req, res) => {
+      let query = req.params.id
+      let result = await productDao.readUser(query)
+      res.send(result)
     }
-  },
-  async (req, res) => {
-    let query = req.params.id
-    let result = await productDao.readUser(query)
-    res.send(result)
-  }
-)
+  )
 
 // Delete user
 productRoute.del(
@@ -49,7 +50,7 @@ productRoute.del(
           .required()
       })
     }
-  },
+  }, isAuth, isAdmin,
   async (req, res) => {
     let query = req.params.id
     await productDao.deleteUser(query)
@@ -79,7 +80,7 @@ productRoute.put(
           .required()
       })
     }
-  },
+  }, isAuth, isAdmin,
   async (req, res) => {
     let data = req.body
     let query = req.params.id
@@ -106,11 +107,11 @@ productRoute.post(
           .required()
       })
     }
-  },
+  }, isAuth, isAdmin,
   async (req, res, next) => {
     try {
-      const { brand, price, name,image ,countInStock} = req.body
-      let result = await productDao.createUser({ brand, price, name,image,countInStock })
+      const { brand, price, name, image, countInStock } = req.body
+      let result = await productDao.createUser({ brand, price, name, image, countInStock })
       //   console.log(result, 'resultresultresultresult')
       res.send({ data: result })
     } catch (error) {

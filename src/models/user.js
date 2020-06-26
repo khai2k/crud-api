@@ -1,3 +1,5 @@
+import { boolean, bool } from 'joi'
+
 var mongoose = require('mongoose')
 
 var UserSchema = new mongoose.Schema({
@@ -13,6 +15,10 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
   }
 })
 const user = mongoose.model('User', UserSchema)

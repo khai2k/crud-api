@@ -1,6 +1,6 @@
 import ProductModel from '../models/product'
 const product = {
-  async createUser({ brand, name, price ,image,countInStock}) {
+  async createUser({ brand, name, price, image, countInStock }) {
     let result = await ProductModel.create({
       brand,
       name,
@@ -10,15 +10,14 @@ const product = {
     })
     console.log(result, 'resultresultresultresult')
     return result
-  
+
   },
   async readUser(query) {
     let result = await ProductModel.findById(query)
     return result
   },
-  async readallUser()
-  {
-    let result= await ProductModel.find({})
+  async readallUser() {
+    let result = await ProductModel.find({})
     return result
   },
   async updateUser(data, query) {

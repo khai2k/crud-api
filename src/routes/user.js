@@ -6,66 +6,93 @@ Joi.objectId = require('joi-objectid')(Joi)
 import restifyRouter from 'restify-router'
 import userDao from '../dao/user'
 import user from '../models/user'
-import { getToken } from '../utils/getToken'
-import {postFetch} from '~utils/fetch'
+import { getToken, isAuth } from '../utils/getToken'
+import { postFetch } from '~utils/fetch'
 
 const Router = restifyRouter.Router
 const userRoute = new Router()
 
 //signin
 userRoute.post("/signin",
-  async(req,res)=>{
+  async (req, res) => {
     try {
-      const {email,password}= req.body;
-      let singInUser = await userDao.signin(email,password);
-      if (singInUser){
+      const { email, password } = req.body;
+      let singInUser = await userDao.signin(email, password);
+      if (singInUser) {
         res.send({
           _id: singInUser._id,
           name: singInUser.name,
-          email: singInUser.email, 
+          email: singInUser.email,
           password: singInUser.password,
-          token: getToken({name:"khai"})
+          token: getToken(singInUser)
         })
       }
       else {
         res.status(400)
-        res.send({msf:"invalid username or password"})
+        res.send({ msf: "invalid username or password" })
       }
     } catch (error) {
+      console.log(error, 'errorerror')
       res.send(error)
     }
-     
+
+  }
+)
+//regsiter
+userRoute.post("/register",
+  async (req, res) => {
+    try {
+      const { email, password, name } = req.body
+      let result = await userDao.createUser({ email, password, name })
+      if (result) {
+        res.send({
+          _id: result._id,
+          name: result.name,
+          email: result.email,
+          password: result.password,
+          token: getToken(result)
+        })
+      }
+      else {
+        res.status(400)
+        res.send({ msf: "invalid username or password" })
+      }
+    } catch (error) {
+      console.log(error, 'errorerror')
+      res.send(error)
+    }
+
   }
 )
 // Read all user
 
 userRoute.get("",
 
-  async (req,res)=>{
+  async (req, res) => {
     let result = await userDao.readallUser();
     res.send(result);
   }
 ),
-// Read user
-userRoute.get(
-  {
-    path: '/:id',
-    validation: {
-      schema: Joi.object().keys({
-        params: Joi.object()
-          .keys({
-            id: Joi.objectId().required()
-          })
-          .required()
-      })
+  // Read user
+  userRoute.get(
+    {
+      path: '/:id',
+      validation: {
+        schema: Joi.object().keys({
+          params: Joi.object()
+            .keys({
+              id: Joi.objectId().required()
+            })
+            .required()
+        })
+      }
+    },
+    async (req, res) => {
+      let query = req.params.id
+      let result = await userDao.readUser(query)
+      res.send(result)
     }
-  },
-  async (req, res) => {
-    let query = req.params.id
-    let result = await userDao.readUser(query)
-    res.send(result)
-  }
-)
+  )
 
 // Delete user
 userRoute.del(
@@ -135,8 +162,8 @@ userRoute.post(
   },
   async (req, res, next) => {
     try {
-      const { email, password, name } = req.body
-      let result = await userDao.createUser({ email, password, name })
+      const { email, password, name, isAdmin } = req.body
+      let result = await userDao.createUser({ email, password, name, isAdmin })
       //   console.log(result, 'resultresultresultresult')
       res.send({ data: result })
     } catch (error) {
