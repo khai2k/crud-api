@@ -13,9 +13,7 @@ const getToken = (user) => {
 const isAuth = (req, res, next) => {
   try {
     const tokken = req.headers.authorization;
-    if (tokken == undefined) console.log("tokenunununu")
     if (tokken) {
-      console.log(tokken);
       jwt.verify(tokken, "JWT_SECRET", (err, decode) => {
         if (err) {
           // res.send({ msg: "Token is invalid" })
@@ -25,10 +23,8 @@ const isAuth = (req, res, next) => {
       })
     }
     else console.log("no token");
-    console.log("cuong");
     return next();
   } catch (error) {
-    console.log("hao");
     res.send(400)
   }
 
@@ -40,7 +36,6 @@ const isAdmin = (req, res, next) => {
     }
     return res.send(404);
   } catch (error) {
-    console.log("khai");
     res.send(404)
   }
 
