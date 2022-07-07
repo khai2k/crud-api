@@ -26,7 +26,7 @@
     "link-module-alias": "^1.2.0",
     "lodash": "^4.17.15",
     "loglevel": "^1.6.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mongoose": "5.7.12",
     "mongoose-autopopulate": "0.10.0",
     "node-cache": "^5.1.0",
