@@ -28,16 +28,12 @@ const user = {
     let result = await UserModel.findById(query)
     return result
   },
-  async readallUser()
-  {
-    let result= await UserModel.find({})
+  async readallUser() {
+    let result = await UserModel.find({})
     return result
   },
   async updateUser(data, query) {
     let result = await UserModel.findOneAndUpdate({ _id: query }, data)
-  },
-  async deleteUser(query) {
-    let result = await UserModel.findOneAndRemove({ _id: query })
   }
 }
 
