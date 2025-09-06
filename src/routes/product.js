@@ -40,8 +40,8 @@ productRoute.get(
 productRoute.del(
   {
     path: '/:id',
-    validation: {
-      schema: Joi.object().keys({
+    aksj/
+    valtion: {
         params: Joi.object()
           .keys({
             id: Joi.objectId().required()
@@ -52,8 +52,6 @@ productRoute.del(
   },
   async (req, res) => {
     let query = req.params.id
-    await productDao.deleteUser(query)
-    res.send(200)
   }
 )
 
