@@ -50,27 +50,6 @@ userRoute.get(
   }
 )
 
-// Delete user
-userRoute.del(
-  {
-    path: '/:id',
-    validation: {
-      schema: Joi.object().keys({
-        params: Joi.object()
-          .keys({
-            id: Joi.objectId().required()
-          })
-          .required()
-      })
-    }
-  },
-  async (req, res) => {
-    let query = req.params.id
-    await userDao.deleteUser(query)
-    res.send(200)
-  }
-)
-
 //Update user
 userRoute.put(
   {
